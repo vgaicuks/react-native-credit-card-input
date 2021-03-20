@@ -30,7 +30,10 @@ const s = StyleSheet.create({
     backgroundColor: "transparent",
   },
   placeholder: {
-    color: "rgba(255, 255, 255, 0.5)",
+    fontFamily: 'Montserrat-Regular',
+    fontWeight: '500',
+    color: "#858585"
+    // color: "rgba(255, 255, 255, 0.5)",
   },
   focused: {
     fontWeight: "bold",
@@ -104,7 +107,8 @@ export default class CardView extends Component {
     },
 
     scale: 1,
-    fontFamily: Platform.select({ ios: "Courier", android: "monospace" }),
+    // fontFamily: Platform.select({ ios: "Courier", android: "monospace" }),
+    fontFamily: 'Montserrat-Regular',
     imageFront: require("../images/card-front.png"),
     imageBack: require("../images/card-back.png"),
   };

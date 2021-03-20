@@ -23,23 +23,40 @@ const s = StyleSheet.create({
     marginTop: 20,
   },
   inputContainer: {
-    marginLeft: 20,
+    marginTop: 20,
   },
   inputLabel: {
-    fontWeight: "bold",
+    fontSize: 13,
+    color: '#867F85',
+    fontFamily: 'Montserrat-Regular',
+    fontWeight: "500",
   },
   input: {
     height: 40,
   },
+  cvcAndExpiryContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  }
 });
 
-const CVC_INPUT_WIDTH = 70;
+// const CVC_INPUT_WIDTH = 70;
+// const EXPIRY_INPUT_WIDTH = CVC_INPUT_WIDTH;
+// const CARD_NUMBER_INPUT_WIDTH_OFFSET = 40;
+// const CARD_NUMBER_INPUT_WIDTH = Dimensions.get("window").width - EXPIRY_INPUT_WIDTH - CARD_NUMBER_INPUT_WIDTH_OFFSET;
+// const NAME_INPUT_WIDTH = CARD_NUMBER_INPUT_WIDTH;
+// const PREVIOUS_FIELD_OFFSET = 40;
+// const POSTAL_CODE_INPUT_WIDTH = 120;
+
+const CVC_INPUT_WIDTH = 120;
 const EXPIRY_INPUT_WIDTH = CVC_INPUT_WIDTH;
 const CARD_NUMBER_INPUT_WIDTH_OFFSET = 40;
-const CARD_NUMBER_INPUT_WIDTH = Dimensions.get("window").width - EXPIRY_INPUT_WIDTH - CARD_NUMBER_INPUT_WIDTH_OFFSET;
+const CARD_NUMBER_INPUT_WIDTH = 300;
 const NAME_INPUT_WIDTH = CARD_NUMBER_INPUT_WIDTH;
 const PREVIOUS_FIELD_OFFSET = 40;
 const POSTAL_CODE_INPUT_WIDTH = 120;
+
 
 /* eslint react/prop-types: 0 */ // https://github.com/yannickcr/eslint-plugin-react/issues/106
 export default class CreditCardInput extends Component {
@@ -84,34 +101,35 @@ export default class CreditCardInput extends Component {
       postalCode: "34567",
     },
     inputContainerStyle: {
-      borderBottomWidth: 1,
-      borderBottomColor: "black",
+      borderBottomWidth: 2,
+      borderBottomColor: "#DEDEDE",
     },
     validColor: "",
-    invalidColor: "red",
-    placeholderColor: "gray",
+    invalidColor: "#dc3545",
+    placeholderColor: "#858585",
     allowScroll: false,
     additionalInputsProps: {},
   };
 
   componentDidMount = () => this._focus(this.props.focused);
 
-  componentWillReceiveProps = newProps => {
+  UNSAFE_componentWillReceiveProps = newProps => {
     if (this.props.focused !== newProps.focused) this._focus(newProps.focused);
   };
 
   _focus = field => {
     if (!field) return;
+    this.refs[field].focus();
 
-    const scrollResponder = this.refs.Form.getScrollResponder();
-    const nodeHandle = ReactNative.findNodeHandle(this.refs[field]);
+    // const scrollResponder = this.refs.Form.getScrollResponder();
+    // const nodeHandle = ReactNative.findNodeHandle(this.refs[field]);
 
-    NativeModules.UIManager.measureLayoutRelativeToParent(nodeHandle,
-      e => { throw e; },
-      x => {
-        scrollResponder.scrollTo({ x: Math.max(x - PREVIOUS_FIELD_OFFSET, 0), animated: true });
-        this.refs[field].focus();
-      });
+    // NativeModules.UIManager.measureLayoutRelativeToParent(nodeHandle,
+    //   e => { throw e; },
+    //   x => {
+    //     scrollResponder.scrollTo({ x: Math.max(x - PREVIOUS_FIELD_OFFSET, 0), animated: true });
+    //     this.refs[field].focus();
+    //   });
   }
 
   _inputProps = field => {
@@ -161,21 +179,22 @@ export default class CreditCardInput extends Component {
           expiry={expiry}
           cvc={cvc} />
         <ScrollView ref="Form"
-          horizontal
           keyboardShouldPersistTaps="always"
           scrollEnabled={allowScroll}
-          showsHorizontalScrollIndicator={false}
           style={s.form}>
           <CCInput {...this._inputProps("number")}
             keyboardType="numeric"
             containerStyle={[s.inputContainer, inputContainerStyle, { width: CARD_NUMBER_INPUT_WIDTH }]} />
-          <CCInput {...this._inputProps("expiry")}
-            keyboardType="numeric"
-            containerStyle={[s.inputContainer, inputContainerStyle, { width: EXPIRY_INPUT_WIDTH }]} />
-          { requiresCVC &&
-            <CCInput {...this._inputProps("cvc")}
+          <View style={s.cvcAndExpiryContainer}>
+            <CCInput {...this._inputProps("expiry")}
               keyboardType="numeric"
-              containerStyle={[s.inputContainer, inputContainerStyle, { width: CVC_INPUT_WIDTH }]} /> }
+              containerStyle={[s.inputContainer, inputContainerStyle, { width: EXPIRY_INPUT_WIDTH }]} />
+            { requiresCVC &&
+              <CCInput {...this._inputProps("cvc")}
+                keyboardType="numeric"
+                containerStyle={[s.inputContainer, inputContainerStyle, { width: CVC_INPUT_WIDTH }]} /> }
+          </View>
+
           { requiresName &&
             <CCInput {...this._inputProps("name")}
               containerStyle={[s.inputContainer, inputContainerStyle, { width: NAME_INPUT_WIDTH }]} /> }
