@@ -3,7 +3,12 @@ import pick from "lodash.pick";
 import values from "lodash.values";
 import every from "lodash.every";
 
-const toStatus = validation => {
+const toStatus = (validation, value='') => {
+  // special case for card number when all digits typed
+  if (value.replace(/\s/g, '').length === 16) {
+    return validation.isValid ? "valid" : "invalid"
+  }
+
   return validation.isValid ? "valid" :
          validation.isPotentiallyValid ? "incomplete" :
          "invalid";
@@ -23,7 +28,7 @@ export default class CCFieldValidator {
     const cvcValidation = valid.cvv(formValues.cvc, maxCVCLength);
 
     const validationStatuses = pick({
-      number: toStatus(numberValidation),
+      number: toStatus(numberValidation, formValues.number),
       expiry: toStatus(expiryValidation),
       cvc: toStatus(cvcValidation),
       name: !!formValues.name ? "valid" : "incomplete",

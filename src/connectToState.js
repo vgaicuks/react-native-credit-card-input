@@ -116,7 +116,8 @@ export default function connectToState(CreditCardInput) {
           {...this.state}
           onFocus={this._onFocus}
           onChange={this._change}
-          onBecomeEmpty={this._focusPreviousField}
+          // onBecomeEmpty={this._focusPreviousField}
+          onBecomeEmpty={() => {}}
           onBecomeValid={this._focusNextField} />
       );
     }
